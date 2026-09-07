@@ -1,0 +1,18 @@
+{
+  "id": "series",
+  "name": "Series",
+  "version": "1.2.0",
+  "entry": "main.lua",
+  "description": "Group books into reading series and open the next book.",
+  "capabilities": ["library-menu", "web-management", "reader-suggestion"],
+  "library_menu": {"label": "Series", "function": "library_json", "group_field": "series", "order_field": "order"},
+  "reader_suggestion": {"label": "Open next book", "function": "next_book", "group_field": "series"},
+  "web": {
+    "page": "index.html",
+    "script": "series_page.js",
+    "icon": "icon.png",
+    "path": "/series",
+    "label": "Series",
+    "order": 30
+  }
+}
