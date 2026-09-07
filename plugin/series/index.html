@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Inx — Series</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#f5f6f7;color:#182027;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    .series-page{max-width:1180px;margin:0 auto;padding:102px 28px 56px}
+    .series-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .series-toolbar label{font-size:12px;color:#737d83;font-weight:650}
+    .series-toolbar select,.series-toolbar input,.series-toolbar button,.book-search{height:36px;border:1px solid #dfe2e4;border-radius:4px;background:#fff;color:#182027;padding:0 10px;font:inherit;font-size:12px}
+    .series-toolbar select{min-width:190px;margin-left:6px}
+    .series-toolbar input{min-width:190px}
+    .series-toolbar button{cursor:pointer;background:#22272b;color:#fff;border-color:#22272b;font-weight:650}
+    .series-toolbar button:hover{background:#42484c}
+    .series-toolbar button:disabled{opacity:.45;cursor:default}
+    .series-toolbar .secondary{background:#fff;color:#22272b;border-color:#cfd4d7}
+    .series-toolbar .secondary:hover{background:#f0f1f2}
+    .series-create{display:flex;gap:6px;margin-left:auto}
+    .panel-head-main{display:flex;align-items:center;gap:10px;min-width:0}
+    .panel-toggle{display:none;height:30px;border:1px solid #dfe2e4;border-radius:4px;background:#fff;color:#59636a;padding:0 9px;cursor:pointer;font:inherit;font-size:11px;font-weight:650;white-space:nowrap}
+    .panel-toggle:hover{background:#f0f1f2;color:#22272b}
+    .status{min-height:20px;color:#59636a;font-size:12px;margin:6px 0 12px}
+    .index-state{display:none;margin:0 0 16px;padding:16px;background:#fff;border:1px solid #dfe2e4;border-left:3px solid #22272b;font-size:13px}
+    .index-state.visible{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .index-state button{height:34px;border:0;border-radius:4px;background:#22272b;color:#fff;padding:0 12px;cursor:pointer;font:inherit;font-size:12px;font-weight:650;white-space:nowrap}
+    .series-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+    .book-panel{min-width:0;background:#fff;border:1px solid #dfe2e4;border-radius:4px;overflow:hidden}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid #e8eaeb}
+    .panel-head strong{font-size:14px}
+    .panel-head small{display:block;color:#7d858b;font-size:11px;margin-top:3px}
+    .book-search{width:160px;min-width:0}
+    .book-list{padding:6px 10px;min-height:330px;max-height:560px;overflow:auto}
+    .book-item{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid #edf0f1;min-height:62px;cursor:grab}
+    .book-item:last-child{border-bottom:0}
+    .book-item:active{cursor:grabbing}
+    .book-item.dragging,.series-item.dragging{opacity:.42}
+    .book-cover{width:34px;height:48px;flex:0 0 34px;background:#eef0f1;display:grid;place-items:center;color:#7d858b;font-size:11px;font-weight:700;overflow:hidden}
+    .book-cover img{width:100%;height:100%;object-fit:contain}
+    .book-copy{min-width:0;flex:1}
+    .book-copy strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .book-copy small{display:block;color:#7d858b;font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .book-add,.book-remove{width:26px;height:26px;flex:0 0 26px;border:1px solid #dfe2e4;border-radius:4px;background:#fff;color:#59636a;cursor:pointer;font-size:17px;line-height:1}
+    .book-add:hover{background:#22272b;color:#fff;border-color:#22272b}
+    .book-remove:hover{background:#f0f1f2;color:#22272b}
+    .series-dropzone{display:flex;flex-direction:column;min-height:330px;padding:10px;background:#fafbfb;border:1px dashed #cfd4d7;margin:10px}
+    .series-dropzone.dragover{background:#eef3f5;border-color:#22272b}
+    .series-book-list{flex:1;min-height:270px}
+    .series-dropzone-actions{display:flex;justify-content:flex-end;padding-top:10px}
+    .series-dropzone-actions button{height:36px;border:1px solid #22272b;border-radius:4px;background:#22272b;color:#fff;padding:0 12px;cursor:pointer;font:inherit;font-size:12px;font-weight:650}
+    .series-dropzone-actions button:hover{background:#42484c}
+    .series-dropzone-actions button:disabled{opacity:.45;cursor:default}
+    .toast{position:fixed;left:50%;bottom:24px;z-index:20;padding:10px 14px;border-radius:5px;background:#22272b;color:#fff;font-size:13px;font-weight:650;opacity:0;pointer-events:none;transform:translate(-50%,10px);transition:opacity .18s ease,transform .18s ease}
+    .toast.visible{opacity:1;transform:translate(-50%,0)}
+    .series-empty{display:grid;place-items:center;min-height:300px;color:#7d858b;text-align:center;font-size:13px;padding:24px}
+    .series-item{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #e1e4e6;padding:7px 8px;margin-bottom:7px;cursor:grab;transition:transform .18s ease,opacity .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .series-item:last-child{margin-bottom:0}
+    .series-item.dragover{border-color:#22272b;box-shadow:0 2px 8px rgba(34,39,43,.12)}
+    .series-order{width:24px;color:#7d858b;text-align:center;font-size:12px;font-weight:700}
+    .series-item .book-remove{margin-left:auto}
+    .hidden{display:none!important}
+    @media(max-width:760px){
+      .series-page{padding:82px 14px 36px}
+      .series-toolbar{display:grid;grid-template-columns:1fr 1fr}
+      .series-toolbar label{grid-column:1/-1}
+      .series-toolbar select{width:100%;margin-left:0}
+      .series-create{grid-column:1/-1;margin-left:0;display:flex}
+      .series-create input{flex:1;min-width:0}
+      .series-toolbar>#refresh{width:100%}
+      .series-workspace{grid-template-columns:1fr}
+      .book-list,.series-dropzone{max-height:none;min-height:220px}
+      .book-panel.books-collapsed .book-list{display:none}
+      .book-panel.books-collapsed .panel-head{border-bottom:0}
+      .panel-head-main{width:100%;justify-content:space-between}
+      .panel-toggle{display:block}
+      .series-book-list{min-height:170px}
+      .series-empty{min-height:190px}
+      .panel-head{align-items:flex-start;flex-direction:column}
+      .book-search{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <main class="series-page">
+    <div class="series-toolbar">
+      <label for="series-select">Series <select id="series-select" aria-label="Choose series"><option value="">No series yet</option></select></label>
+      <div class="series-create"><input id="new-series-name" type="text" placeholder="New series name" aria-label="New series name"><button id="new-series" type="button">New series</button></div>
+      <button id="refresh" class="secondary" type="button">Refresh</button>
+    </div>
+    <div id="status" class="status" aria-live="polite">Loading library index…</div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="index-state" class="index-state"><span>Library index is not available. Build it before grouping books.</span><button id="refresh-index" type="button">Build library index</button></div>
+    <div id="workspace" class="series-workspace">
+      <section id="books-panel" class="book-panel">
+        <div class="panel-head"><div class="panel-head-main"><div><strong>Books</strong><small id="book-count"></small></div><button id="books-toggle" class="panel-toggle" type="button" aria-expanded="true" aria-controls="available-books">Collapse</button></div><input id="book-search" class="book-search" type="search" placeholder="Search books" aria-label="Search books"></div>
+        <div id="available-books" class="book-list"></div>
+      </section>
+      <section class="book-panel">
+        <div class="panel-head"><div><strong id="active-series-name">Choose or create a series</strong><small>Drag books to set the order</small></div></div>
+        <div id="series-books" class="series-dropzone">
+          <div id="series-book-list" class="series-book-list"></div>
+          <div class="series-dropzone-actions"><button id="save-series" type="button" disabled>Save changes</button></div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script defer src="/js/plugin/series"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "id": "calibre-series",
+  "name": "Calibre Series",
+  "version": "1.0.2",
+  "entry": "main.lua",
+  "description": "Use Calibre EPUB series metadata and series numbers in the library.",
+  "capabilities": ["library-menu", "reader-suggestion"],
+  "library_menu": {"label": "Calibre Series", "function": "library_json", "group_field": "series", "order_field": "order", "priority": 10},
+  "reader_suggestion": {"label": "Open next book", "function": "next_book", "group_field": "series"}
+}

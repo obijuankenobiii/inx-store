@@ -1,0 +1,10 @@
+{
+  "id": "study-cards",
+  "name": "Anki Export",
+  "version": "1.1.0",
+  "entry": "main.lua",
+  "description": "Adds anki supported export",
+  "capabilities": ["reader-selection", "web-export"],
+  "reader_action": {"label": "Add to study", "function": "add_card"},
+  "web": {"page": "index.html", "script": "study_page.js", "icon": "icon.png", "path": "/study", "label": "Anki Export", "order": 20}
+}
