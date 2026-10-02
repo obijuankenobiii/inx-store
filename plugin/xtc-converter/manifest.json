@@ -1,0 +1,17 @@
+{
+  "id": "xtc-converter",
+  "name": "CBZ / CBR to XTC",
+  "version": "1.0.7",
+  "entry": "main.lua",
+  "description": "Convert comic archives to XTC in the browser and upload multiple books to the reader.",
+  "capabilities": ["web-management"],
+  "web": {
+    "page": "index.html",
+    "script": "app.js",
+    "icon": "icon.png",
+    "assets": ["unrar-RR456N3Q.wasm"],
+    "path": "/xtc-converter",
+    "label": "CBZ / CBR to XTC",
+    "order": 40
+  }
+}

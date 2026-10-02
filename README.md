@@ -54,4 +54,5 @@ installer can validate and extract them safely:
 ```text
 plugin/study-cards.zip  # Anki Export
 plugin/series.zip       # Series grouping and next-book suggestions
+plugin/xtc-converter.zip # Browser CBZ / CBR to XTC conversion and upload
 ```
